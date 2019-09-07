@@ -16,6 +16,10 @@ public class Mensaje {
 	
 	private int contenido;
 	
+	public Mensaje() {
+		
+	}
+	
 	public void enviar() {
 		// TODO Auto-generated method stub
 		

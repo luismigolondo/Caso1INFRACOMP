@@ -12,9 +12,12 @@ public class Cliente extends Thread{
 	//numero de mensajes
 	private int numeroConsultas;
 	
-	public Cliente(int pNum) {
+	private Buffer buffer;
+	
+	public Cliente(int pNum, Buffer b) {
 		this.numeroConsultas = pNum;
 		this.mensajes = new Mensaje[numeroConsultas];
+		this.buffer = b;
 	}
 	
 	public void enviarMensaje(int pIdentificador)
