@@ -13,7 +13,7 @@ public class Servidor extends Thread{
 	private Mensaje mensajeActual;
 	
 	public void solicitar() {
-		mensajeActual = buffer.asignarMensaje();
+		mensajeActual = buffer.retirar();
 	}
 	
 	public void respond()

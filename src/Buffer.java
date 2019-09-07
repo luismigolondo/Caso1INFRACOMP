@@ -18,47 +18,48 @@ import javax.swing.JFrame;
  */
 public class Buffer {
 
-	private static int tamanio;
+	private int tamanio;
 
-	private static int numeroClientes;
+	private int numeroClientes;
 
-	private static int numeroServidores;
+	private int numeroServidores;
 
-	private static int consultasClientes;
+	private int consultasClientes;
 
 	private ArrayList<Mensaje> mensajes = new ArrayList<>();
 
-	public Mensaje asignarMensaje() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public synchronized void guardar(Mensaje men) {
+	public void guardar(Mensaje men) {
+		synchronized (men) {
 			try {
 				if(mensajes.size() < tamanio)
 				{
 					//Si el buffer todavia tiene capacidad entonces almaceno el mensaje.
 					mensajes.add(men);
+					System.out.println("Mensaje " + men.getId() + " agregado. Esperando respuesta...");
 					men.wait();
 				}
 				//si no, duermo el cliente sobre esta clase...
 				else
+				{
+					System.out.println("No hay mas espacio, cliente a la espera...");
 					wait();
-			} catch (InterruptedException e) {
+				}
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		}
 	}
-	
-	public synchronized Mensaje retirar()
+
+	public Mensaje retirar()
 	{
 		Random random = new Random();
 		int idMensaje = random.nextInt(tamanio);
 		mensajes.remove(idMensaje);
-		
+
 		return null;
 	}
 
-	public static void leerArchivo()
+	public void leerArchivo()
 	{
 		try {
 			JFileChooser jFileChooser = new JFileChooser();
@@ -94,22 +95,27 @@ public class Buffer {
 
 	public static void main(String[] args)
 	{
+		Buffer b = new Buffer();
 		System.out.println("Caso 1 Infracomp - 2019-2");
 		System.out.println("Luis Miguel Gomez Londono - 201729597");
 		System.out.println("Daniel Bernal - #########");
 		System.out.println("");
-		leerArchivo();
-		System.out.println("Numero de Clientes: " + numeroClientes);
-		System.out.println("Numero de Servidores: " + numeroServidores);
-		System.out.println("Numero de consultas: " + consultasClientes);
-		System.out.println("Tamanio BUFFER: " + tamanio);	
+		b.leerArchivo();
+		System.out.println("Numero de Clientes: " + b.numeroClientes);
+		System.out.println("Numero de Servidores: " + b.numeroServidores);
+		System.out.println("Numero de consultas: " + b.consultasClientes);
+		System.out.println("Tamanio BUFFER: " + b.tamanio);	
 
 		System.out.println();
 
 		System.out.println("*******************************************");
 		System.out.println("*                 WORKING                 *");
 		System.out.println("*******************************************");
-
+		//Creacion de clientes...
+		for (int i = 0; i < b.numeroClientes; i++) {
+			Cliente cliente =  new Cliente(i + 1, b.consultasClientes, b);
+			cliente.run();
+		}
 
 	}
 

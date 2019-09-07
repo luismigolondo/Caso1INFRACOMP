@@ -4,16 +4,19 @@
  */
 public class Cliente extends Thread{
 
+	private int id;
+	
 	private Mensaje [] mensajes;
 	//numero de mensajes
 	private int numeroConsultas;
 	
 	private Buffer buffer;
 	
-	public Cliente(int pNum, Buffer b) {
+	public Cliente(int id, int pNum, Buffer b) {
+		this.id = id;
 		this.numeroConsultas = pNum;
-		this.mensajes = new Mensaje[numeroConsultas];
 		this.buffer = b;
+		this.mensajes = new Mensaje[numeroConsultas];
 	}
 	
 	public void enviarMensaje(int pIdentificador)
@@ -22,7 +25,9 @@ public class Cliente extends Thread{
 	}
 	
 	public void run () {
+		System.out.println("Cliente " + id + " activado.");
 		for (int i = 0; i < mensajes.length; i++) {
+			mensajes[i] = new Mensaje(i, buffer);
 			enviarMensaje(i);
 		}
 	}
