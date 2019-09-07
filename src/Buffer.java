@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -18,11 +19,11 @@ import javax.swing.JFrame;
 public class Buffer {
 
 	private static int tamanio;
-	
+
 	private static int numeroClientes;
-	
+
 	private static int numeroServidores;
-	
+
 	private static int consultasClientes;
 
 	private ArrayList<Mensaje> mensajes = new ArrayList<>();
@@ -32,19 +33,29 @@ public class Buffer {
 		return null;
 	}
 
-	public void guardar(Mensaje men) {
-
-		if(mensajes.size() == tamanio)
-		{
-			//No lo pude guardar porque me encuentro lleno. Cliente a dormir.
-		}
-		else
-		{
-			//lo pude guardar
-			mensajes.add(men);
-			men.guardado();
-		}
+	public synchronized void guardar(Mensaje men) {
+			try {
+				if(mensajes.size() < tamanio)
+				{
+					//Si el buffer todavia tiene capacidad entonces almaceno el mensaje.
+					mensajes.add(men);
+					men.wait();
+				}
+				//si no, duermo el cliente sobre esta clase...
+				else
+					wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+	}
+	
+	public synchronized Mensaje retirar()
+	{
+		Random random = new Random();
+		int idMensaje = random.nextInt(tamanio);
+		mensajes.remove(idMensaje);
 		
+		return null;
 	}
 
 	public static void leerArchivo()
@@ -63,9 +74,9 @@ public class Buffer {
 			br.readLine();
 			br.readLine();
 			String linea = br.readLine();
-			
+
 			String [] l = linea.split(",");
-			
+
 			numeroClientes = (int) Integer.parseInt(l[0]);
 			numeroServidores = (int) Integer.parseInt(l[1]);
 			consultasClientes = (int) Integer.parseInt(l[2]);
@@ -92,14 +103,14 @@ public class Buffer {
 		System.out.println("Numero de Servidores: " + numeroServidores);
 		System.out.println("Numero de consultas: " + consultasClientes);
 		System.out.println("Tamanio BUFFER: " + tamanio);	
-		
+
 		System.out.println();
-		
+
 		System.out.println("*******************************************");
 		System.out.println("*                 WORKING                 *");
 		System.out.println("*******************************************");
 
-		
+
 	}
 
 }
