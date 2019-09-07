@@ -30,4 +30,18 @@ public class Mensaje {
 		
 	}
 
+	public void guardado() {
+		//Se pudo guardar entonces pongo el cliente a dormir...
+		try {
+			cliente.wait();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+	}
+	
+	public void respondido() {
+		cliente.notify();
+	}
+
 }

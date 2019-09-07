@@ -33,8 +33,18 @@ public class Buffer {
 	}
 
 	public void guardar(Mensaje men) {
-		// TODO Auto-generated method stub
 
+		if(mensajes.size() == tamanio)
+		{
+			//No lo pude guardar porque me encuentro lleno. Cliente a dormir.
+		}
+		else
+		{
+			//lo pude guardar
+			mensajes.add(men);
+			men.guardado();
+		}
+		
 	}
 
 	public static void leerArchivo()

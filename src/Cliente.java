@@ -22,7 +22,9 @@ public class Cliente extends Thread{
 	}
 	
 	public void run () {
-		
+		for (int i = 0; i < mensajes.length; i++) {
+			enviarMensaje(i);
+		}
 	}
 	
 }
