@@ -1,7 +1,3 @@
-/**
- * @author luisgomez
- *
- */
 public class Cliente extends Thread{
 
 	private int id;

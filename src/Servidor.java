@@ -1,12 +1,4 @@
-/**
- * 
- */
-
-/**
- * @author luisgomez
- *
- */
-public class Servidor extends Thread{
+public class Servidor extends Thread {
 
 	private Buffer buffer;
 
@@ -30,6 +22,7 @@ public class Servidor extends Thread{
 					System.out.println("Servidor "+ this.id + " retiró el mensaje: "+ retirado.getId() + " Del cliente: "+ retirado.getCliente().getIdentificador());
 				}
 			}
+			//Si no existen mensajes en el buffer se libera el procesador.
 			else
 				yield();
 			if(buffer.getMensajesRestantes() == 0)

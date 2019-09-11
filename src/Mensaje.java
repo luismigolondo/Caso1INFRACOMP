@@ -1,11 +1,3 @@
-/**
- * 
- */
-
-/**
- * @author luisgomez
- *
- */
 public class Mensaje {
 
 	private Buffer buffer;

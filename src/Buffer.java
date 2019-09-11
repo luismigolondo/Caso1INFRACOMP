@@ -8,14 +8,6 @@ import java.util.Random;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
-/**
- * 
- */
-
-/**
- * @author luisgomez
- *
- */
 public class Buffer {
 
 	private int tamanio;
@@ -174,7 +166,7 @@ public class Buffer {
 		Buffer buffer = new Buffer();
 		System.out.println("Caso 1 Infracomp - 2019-2");
 		System.out.println("Luis Miguel Gomez Londono - 201729597");
-		System.out.println("Daniel Bernal - #########");
+		System.out.println("Daniel Bernal - 201519654");
 		System.out.println("");
 		System.out.println("Numero de Clientes: " + buffer.getNumeroClientes());
 		System.out.println("Numero de Servidores: " + buffer.getNumeroServidores());

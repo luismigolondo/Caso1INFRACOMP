@@ -1,6 +1,6 @@
-# Caso1INFRACOMP
+﻿# Caso1INFRACOMP
 ## Luis Miguel Gómez Londoño - 201729597
-## Daniel Andres Bernal - /////////
+## Daniel Andres Bernal - 201519654
 En este proyecto se toma el caso de Colpensiones para el Caso #1 de la clase de Infraestructura Computacional...
 
 ## Documento de documentacion de Diseño y Funcionamiento:
