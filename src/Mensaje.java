@@ -11,13 +11,16 @@ public class Mensaje {
 	private Buffer buffer;
 
 	private int id;
+	
+	private Cliente cliente;
 
 	//El contenido inicial siempre sera 0, con respuesta sera 1...
 	private int contenido = 0;
 
-	public Mensaje(int id, Buffer b) {
+	public Mensaje(int id, Buffer b, Cliente c) {
 		this.id =  id;
 		this.buffer = b;
+		this.cliente = c;
 	}
 
 	/**
@@ -63,8 +66,16 @@ public class Mensaje {
 	}
 
 	public void cambiar() {
-		System.out.println("Mensaje " + id + " cambiado");
+		System.out.println("Mensaje " + id + "  de cliente " + cliente.getId() +  " cambiado");
 		contenido++;
+	}
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
 	}
 
 }

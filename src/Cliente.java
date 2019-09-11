@@ -27,7 +27,7 @@ public class Cliente extends Thread{
 	public void run () {
 		System.out.println("Cliente " + id + " activado.");
 		for (int i = 0; i < mensajes.length; i++) {
-			mensajes[i] = new Mensaje(i, buffer);
+			mensajes[i] = new Mensaje(i, buffer, this);
 			enviarMensaje(i);
 		}
 	}

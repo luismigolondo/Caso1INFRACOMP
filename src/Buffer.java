@@ -25,9 +25,9 @@ public class Buffer {
 	private int numeroServidores;
 
 	private int consultasClientes;
-	
+
 	private int mensajesRestantes;
-	
+
 	private ArrayList<Mensaje> mensajes = new ArrayList<>();
 
 	public Buffer() {
@@ -96,6 +96,7 @@ public class Buffer {
 				else
 				{
 					System.out.println("No hay mas espacio, cliente a la espera...");
+					//Se hace con mensajes para que el cliente que esta intentando agregar ahi se ponga a dormir. 
 					wait();
 				}
 			} catch (Exception e) {
@@ -107,16 +108,14 @@ public class Buffer {
 	public Mensaje retirar()
 	{
 		Mensaje retirado = null;
-		synchronized(this)
+		synchronized(mensajes)
 		{
 			if(!mensajes.isEmpty())
 			{
-				Random random = new Random();
-				int idMensaje = random.nextInt(tamanio);
 				retirado = mensajes.remove(0);
 				//Como ya liberamos uno entonces le decimos a los clientes en espera que sigan...
-				notifyAll();
-				System.out.println("Restantes " + mensajesRestantes);
+				mensajes.notifyAll();
+				System.out.println("Mensajes restantes " + mensajesRestantes);
 				mensajesRestantes--;
 			}
 		}
@@ -178,14 +177,14 @@ public class Buffer {
 		//Creacion de clientes...
 		for (int i = 0; i < buffer.numeroClientes; i++) {
 			Cliente cliente =  new Cliente(i + 1, buffer.getConsultasClientes(), buffer);
-			cliente.run();
+			cliente.start();
 		}
 		//creacion de servidores...
 		for (int i = 0; i < buffer.numeroServidores; i++) {
 			Servidor servidor = new Servidor(i + 1, buffer);
-			servidor.run();
+			servidor.start();
 		}
-		
+
 
 	}
 

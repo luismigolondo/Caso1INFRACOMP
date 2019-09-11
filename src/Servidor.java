@@ -23,7 +23,7 @@ public class Servidor extends Thread{
 			Mensaje retirado = buffer.retirar();
 			if(retirado != null)
 			{
-				System.out.println("Mensaje retirado por servidor " + id);				
+				System.out.println("Mensaje " + retirado.getId() + " de cliente "+ retirado.getCliente().getId() +" retirado por servidor " + id);				
 				retirado.cambiar();
 				yield();
 			}
