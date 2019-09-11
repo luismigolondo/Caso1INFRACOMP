@@ -19,6 +19,20 @@ public class Cliente extends Thread{
 		this.mensajes = new Mensaje[numeroConsultas];
 	}
 	
+	
+	
+	public int getIdentificador() {
+		return id;
+	}
+
+
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+
+
 	public void enviarMensaje(int pIdentificador)
 	{
 		buffer.guardar(mensajes[pIdentificador]);

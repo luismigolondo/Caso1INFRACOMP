@@ -66,7 +66,6 @@ public class Mensaje {
 	}
 
 	public void cambiar() {
-		System.out.println("Mensaje " + id + "  de cliente " + cliente.getId() +  " cambiado");
 		contenido++;
 	}
 

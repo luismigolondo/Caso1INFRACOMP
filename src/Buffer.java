@@ -35,7 +35,7 @@ public class Buffer {
 		mensajesRestantes = numeroClientes * consultasClientes;
 	}
 
-	public int getTamanio() {
+	public synchronized int getTamanio() {
 		return tamanio;
 	}
 
@@ -43,7 +43,7 @@ public class Buffer {
 		this.tamanio = tamanio;
 	}
 
-	public int getNumeroClientes() {
+	public synchronized int getNumeroClientes() {
 		return numeroClientes;
 	}
 
@@ -51,7 +51,7 @@ public class Buffer {
 		this.numeroClientes = numeroClientes;
 	}
 
-	public int getNumeroServidores() {
+	public synchronized int getNumeroServidores() {
 		return numeroServidores;
 	}
 
@@ -59,7 +59,7 @@ public class Buffer {
 		this.numeroServidores = numeroServidores;
 	}
 
-	public int getConsultasClientes() {
+	public synchronized int getConsultasClientes() {
 		return consultasClientes;
 	}
 
@@ -67,7 +67,7 @@ public class Buffer {
 		this.consultasClientes = consultasClientes;
 	}
 
-	public ArrayList<Mensaje> getMensajes() {
+	public synchronized ArrayList<Mensaje> getMensajes() {
 		return mensajes;
 	}
 
@@ -75,7 +75,7 @@ public class Buffer {
 		this.mensajes = mensajes;
 	}
 
-	public int getMensajesRestantes() {
+	public synchronized int getMensajesRestantes() {
 		return mensajesRestantes;
 	}
 
@@ -84,21 +84,32 @@ public class Buffer {
 	}
 
 	public void guardar(Mensaje men) {
-		synchronized (this) {
+		//para que cuando el cliente se despierte, tenga la posibliidad de agregar el mensaje...
+		while(true)
+		{
 			try {
-				if(mensajes.size() < tamanio)
-				{
-					//Si el buffer todavia tiene capacidad entonces almaceno el mensaje.
-					mensajes.add(men);
-					System.out.println("Mensaje " + men.getId() + " agregado. Esperando respuesta...");
-				}
-				//si no, duermo el cliente sobre esta clase...
-				else
-				{
-					System.out.println("No hay mas espacio, cliente a la espera...");
-					//Se hace con mensajes para que el cliente que esta intentando agregar ahi se ponga a dormir. 
-					wait();
-				}
+
+				synchronized (men) {
+					if(mensajes.size() < tamanio)
+					{
+						//Si el buffer todavia tiene capacidad entonces almaceno el mensaje.
+						mensajes.add(men);
+						System.out.println("Mensaje " + men.getId() + " de cliente " + men.getCliente().getIdentificador() + " agregado. Esperando respuesta...");
+						// mando a dormir el cliente dentro del mensaje que me esta usando mientras espero respuesta.
+						men.wait();
+						break;
+					}
+					//si no, duermo el cliente sobre esta clase...
+					else
+					{
+						synchronized (this) {
+							System.out.println("No hay mas espacio, cliente " + men.getCliente().getIdentificador() + " a la espera...");
+							//poner a esperar el cliente que me esta usando si no hay espacio...
+							wait();				
+						}
+					}
+				}     
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -108,16 +119,18 @@ public class Buffer {
 	public Mensaje retirar()
 	{
 		Mensaje retirado = null;
-		synchronized(mensajes)
+		synchronized(this)
 		{
 			if(!mensajes.isEmpty())
 			{
 				retirado = mensajes.remove(0);
-				//Como ya liberamos uno entonces le decimos a los clientes en espera que sigan...
-				mensajes.notifyAll();
-				System.out.println("Mensajes restantes " + mensajesRestantes);
 				mensajesRestantes--;
+				if(retirado != null)
+					System.out.println("Mensaje " + retirado.getId() +  "  de cliente " + retirado.getCliente().getIdentificador() + " respondido");
 			}
+			//Aca despierto al cliente ya que el buffer podria estar con capacidad, en caso de no tener, el mismo metodo de guardar
+			//se encarga de volverlo a dormir...
+			notifyAll();
 		}
 
 		return retirado;
@@ -150,7 +163,6 @@ public class Buffer {
 			br.close();
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
