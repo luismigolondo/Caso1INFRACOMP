@@ -62,13 +62,9 @@ public class Mensaje {
 		this.contenido = contenido;
 	}
 
-	public void enviar() {
-		buffer.guardar(this);		
-	}
-
 	public void cambiar() {
-		// TODO Auto-generated method stub
-
+		System.out.println("Mensaje " + id + " cambiado");
+		contenido++;
 	}
 
 }

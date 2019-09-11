@@ -21,7 +21,7 @@ public class Cliente extends Thread{
 	
 	public void enviarMensaje(int pIdentificador)
 	{
-		mensajes[pIdentificador].enviar();
+		buffer.guardar(mensajes[pIdentificador]);
 	}
 	
 	public void run () {

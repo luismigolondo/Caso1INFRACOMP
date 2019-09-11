@@ -25,18 +25,72 @@ public class Buffer {
 	private int numeroServidores;
 
 	private int consultasClientes;
-
+	
+	private int mensajesRestantes;
+	
 	private ArrayList<Mensaje> mensajes = new ArrayList<>();
 
+	public Buffer() {
+		leerArchivo();
+		mensajesRestantes = numeroClientes * consultasClientes;
+	}
+
+	public int getTamanio() {
+		return tamanio;
+	}
+
+	public void setTamanio(int tamanio) {
+		this.tamanio = tamanio;
+	}
+
+	public int getNumeroClientes() {
+		return numeroClientes;
+	}
+
+	public void setNumeroClientes(int numeroClientes) {
+		this.numeroClientes = numeroClientes;
+	}
+
+	public int getNumeroServidores() {
+		return numeroServidores;
+	}
+
+	public void setNumeroServidores(int numeroServidores) {
+		this.numeroServidores = numeroServidores;
+	}
+
+	public int getConsultasClientes() {
+		return consultasClientes;
+	}
+
+	public void setConsultasClientes(int consultasClientes) {
+		this.consultasClientes = consultasClientes;
+	}
+
+	public ArrayList<Mensaje> getMensajes() {
+		return mensajes;
+	}
+
+	public void setMensajes(ArrayList<Mensaje> mensajes) {
+		this.mensajes = mensajes;
+	}
+
+	public int getMensajesRestantes() {
+		return mensajesRestantes;
+	}
+
+	public void setMensajesRestantes(int mensajesRestantes) {
+		this.mensajesRestantes = mensajesRestantes;
+	}
+
 	public void guardar(Mensaje men) {
-		synchronized (men) {
+		synchronized (this) {
 			try {
 				if(mensajes.size() < tamanio)
 				{
 					//Si el buffer todavia tiene capacidad entonces almaceno el mensaje.
 					mensajes.add(men);
 					System.out.println("Mensaje " + men.getId() + " agregado. Esperando respuesta...");
-					men.wait();
 				}
 				//si no, duermo el cliente sobre esta clase...
 				else
@@ -52,11 +106,22 @@ public class Buffer {
 
 	public Mensaje retirar()
 	{
-		Random random = new Random();
-		int idMensaje = random.nextInt(tamanio);
-		mensajes.remove(idMensaje);
+		Mensaje retirado = null;
+		synchronized(this)
+		{
+			if(!mensajes.isEmpty())
+			{
+				Random random = new Random();
+				int idMensaje = random.nextInt(tamanio);
+				retirado = mensajes.remove(0);
+				//Como ya liberamos uno entonces le decimos a los clientes en espera que sigan...
+				notifyAll();
+				System.out.println("Restantes " + mensajesRestantes);
+				mensajesRestantes--;
+			}
+		}
 
-		return null;
+		return retirado;
 	}
 
 	public void leerArchivo()
@@ -95,16 +160,15 @@ public class Buffer {
 
 	public static void main(String[] args)
 	{
-		Buffer b = new Buffer();
+		Buffer buffer = new Buffer();
 		System.out.println("Caso 1 Infracomp - 2019-2");
 		System.out.println("Luis Miguel Gomez Londono - 201729597");
 		System.out.println("Daniel Bernal - #########");
 		System.out.println("");
-		b.leerArchivo();
-		System.out.println("Numero de Clientes: " + b.numeroClientes);
-		System.out.println("Numero de Servidores: " + b.numeroServidores);
-		System.out.println("Numero de consultas: " + b.consultasClientes);
-		System.out.println("Tamanio BUFFER: " + b.tamanio);	
+		System.out.println("Numero de Clientes: " + buffer.getNumeroClientes());
+		System.out.println("Numero de Servidores: " + buffer.getNumeroServidores());
+		System.out.println("Numero de consultas: " + buffer.getConsultasClientes());
+		System.out.println("Tamanio BUFFER: " + buffer.getTamanio());	
 
 		System.out.println();
 
@@ -112,10 +176,16 @@ public class Buffer {
 		System.out.println("*                 WORKING                 *");
 		System.out.println("*******************************************");
 		//Creacion de clientes...
-		for (int i = 0; i < b.numeroClientes; i++) {
-			Cliente cliente =  new Cliente(i + 1, b.consultasClientes, b);
+		for (int i = 0; i < buffer.numeroClientes; i++) {
+			Cliente cliente =  new Cliente(i + 1, buffer.getConsultasClientes(), buffer);
 			cliente.run();
 		}
+		//creacion de servidores...
+		for (int i = 0; i < buffer.numeroServidores; i++) {
+			Servidor servidor = new Servidor(i + 1, buffer);
+			servidor.run();
+		}
+		
 
 	}
 
