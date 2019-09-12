@@ -4,7 +4,7 @@
 En este proyecto se toma el caso de Colpensiones para el Caso #1 de la clase de Infraestructura Computacional...
 
 ## Documento de documentacion de Diseño y Funcionamiento:
-### docs > Documento de Diseno y Funcionamiento [a link](https://github.com/luismigolondo/Caso1INFRACOMP/blob/master/docs/Documento%20de%20Diseno%20y%20Funcionamiento.docx)
+### [docs > Documento de Diseno y Funcionamiento](https://github.com/luismigolondo/Caso1INFRACOMP/blob/master/docs/Documento%20de%20Diseno%20y%20Funcionamiento.docx)
 
 ## Archivo de configuracion inicial para el programa:
 ### data > config
